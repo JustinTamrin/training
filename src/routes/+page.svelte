@@ -1,10 +1,30 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import '../app.css';
+	import { fetchPokemon, pokemonDetails, type Pokemon } from './functions/pokemonFetch';
 	let count = 0;
+	let pokemon: Pokemon | null = null;
+
+	async function getPokemon(name: string) {
+		try {
+			pokemon = await fetchPokemon(name);
+		} catch {
+			console.log('Something is wrong');
+		}
+	}
 
 	function addCount() {
 		count += 1;
 	}
+
+	function hello(word: string) {
+		if (word == 'hi') return word;
+		else return 'Hello World';
+	}
+
+	// onMount(async () => {
+	// 	fetchPokemon('pikachu');
+	// });
 </script>
 
 <div class="container">
@@ -21,11 +41,16 @@
 
 	<h1 class="text-center mt-10">Current count is {count}</h1>
 	<button
-		on:click={addCount}
+		on:click={() => {
+			addCount();
+			getPokemon('bulbasaur');
+		}}
 		type="button"
 		class="mt-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
 		>Add Counter</button
 	>
+	<!-- <img src={$pokemonDetails?.image} alt="Pikachu" /> -->
+	<img src={pokemon?.image} alt="pokemon" style="display: {pokemon?.image ? 'blocl' : 'none'};" />
 </div>
 
 <style>
