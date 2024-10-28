@@ -1,0 +1,58 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import '../../app.css';
+	import { fetchPokemon, pokemonDetails, type Pokemon } from '../functions/pokemonFetch';
+	let count = 0;
+	let pokemon: Pokemon | null = null;
+
+	async function getPokemon(name: string) {
+		try {
+			pokemon = await fetchPokemon(name);
+		} catch {
+			console.log('Something is wrong');
+		}
+	}
+
+	function addCount() {
+		count += 1;
+	}
+
+	function hello(word: string) {
+		if (word == 'hi') return word;
+		else return 'Hello World';
+	}
+
+	// onMount(async () => {
+	// 	fetchPokemon('pikachu');
+	// });
+</script>
+
+<h1
+	class="mb-4 text-3xl font-extrabold text-white-900 dark:text-white md:text-5xl lg:text-6xl text-center mt-10"
+>
+	<span class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
+		<slot name="first_heading">Hey</slot>
+	</span>
+	<slot name="second_heading">Hey</slot>
+</h1>
+<p class="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400 text-center">
+	Here at I focus on training my programming skills
+</p>
+
+<h1 class="text-center mt-10">Current count is {count}</h1>
+<div class="text-center">
+	<button
+		on:click={() => {
+			addCount();
+			getPokemon('pikachu');
+		}}
+		type="button"
+		class="mt-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+		>Add Counter</button
+	>
+</div>
+<!-- <img src={$pokemonDetails?.image} alt="Pikachu" /> -->
+<img src={pokemon?.image} alt="pokemon" style="display: {pokemon?.image ? 'blocl' : 'none'};" />
+
+<style>
+</style>
