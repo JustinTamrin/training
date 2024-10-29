@@ -8,10 +8,10 @@
 // 	port: 5432
 // });
 
+// export default pool;
+
 import pkg from 'pg';
 const { Pool } = pkg;
-
-// export default pool;
 
 const pool = new Pool({
 	user: 'postgres',

@@ -1,37 +1,16 @@
 <script lang="ts">
 	import '../../app.css';
 
-	// let name = '';
-	// let subject = '';
-	// let message = '';
-
-	// async function submitForm() {
-	// 	const response = await fetch('../api/items', {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify({ name, subject, message })
-	// 	});
-	// 	if (response.ok) {
-	// 		console.log('Form submitted successfully');
-	// 		window.location.reload();
-	// 	} else {
-	// 		console.error('Error submitting form', response.statusText);
-	// 	}
-	// }
-
 	interface Data {
 		name: string;
 		subject: string;
 		message: string;
-		id: number;
 	}
 
+	let data: Data[] = [];
 	let name = '';
 	let subject = '';
 	let message = '';
-	let data: Data[] = [];
 
 	async function submitForm() {
 		const response = await fetch('../api/items', {
@@ -41,23 +20,23 @@
 			},
 			body: JSON.stringify({ name, subject, message })
 		});
-
-		try {
-			if (response.ok) console.log('Insert successfully');
-		} catch (error) {
-			console.error('Cannot submit form');
+		if (response.ok) {
+			console.log('Form Successfully submitted: ', response);
+			window.location.reload();
+		} else {
+			console.error('Something is wrong');
 		}
 	}
 
 	async function getData() {
-		const response = await fetch('../api/items', {
-			method: 'GET',
-			headers: {
-				Accept: 'application/json'
-			}
-		});
-		data = await response.json();
-		return data;
+		const request = await fetch('../api/items');
+
+		if (request.ok) {
+			console.log('Get successful: ', request);
+			data = await request.json();
+		} else {
+			console.log('Get is not successful: ', Error);
+		}
 	}
 </script>
 
@@ -69,14 +48,15 @@
 	<button type="submit">Submit</button>
 </form>
 
-<div>
+<div style="margin-top: 20px;">
 	<button onclick={getData}> Get data </button>
-	<div>
-		{#each data as item}
-			<div>Name: {item.name}</div>
-			<div>Message: {item.message}</div>
-		{/each}
-	</div>
+</div>
+
+<div style="color: white;">
+	{#each data as item}
+		<div>Name: {item.name}</div>
+		<div>Subject: {item.message}</div>
+	{/each}
 </div>
 
 <style>
