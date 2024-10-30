@@ -1,21 +1,32 @@
-import type { RequestEvent } from './$types';
 import pool from '$lib/db';
 import type { RequestHandler } from '@sveltejs/kit';
-import type { EventHandler } from 'svelte/elements';
+import { PrismaClient } from '@prisma/client';
+
+interface FormData {
+	name: string;
+	subject: string;
+	message: string;
+}
+const prisma = new PrismaClient();
 
 export const POST: RequestHandler = async ({ request }) => {
-	const { name, subject, message } = await request.json();
-	const query = `INSERT INTO "form-details"(name, subject, message) VALUES ($1, $2, $3);`;
-
-	const values = [name, subject, message];
+	const { name, subject, message } = (await request.json()) as FormData;
 
 	try {
-		const result = await pool.query(query, values);
+		const result = await prisma.form_details.create({
+			data: {
+				name: name,
+				message: message,
+				subject: subject
+			}
+		});
 		console.log('Insert is successful:', result);
 		return new Response(JSON.stringify(result), { status: 201 });
 	} catch (error) {
 		console.error('Something is wrong:', error);
-		return new Response(JSON.stringify({ error: 'Something is wrong' }), { status: 500 });
+		return new Response(JSON.stringify({ 'Something is wrong': error }), { status: 500 });
+	} finally {
+		await prisma.$disconnect();
 	}
 };
 
